@@ -50,20 +50,8 @@ def buscar_alumno_por_rut(rut):
 
 #Funcion que despliega el menu de administrador
 def panel_admin():
-
-    #Validacion de intentos
-    intentos = 3
-    while intentos > 0:
-        clave = input("Ingresa la clave del administrador: ")
-        if clave == clave_maestra:
-            break
-        intentos -= 1
-        print(f"Clave incorrecta. Te quedan {intentos} intentos.")
-    else:
-        print("Demasiados intentos fallidos. Acceso denegado.")
-        return
-    
-
+    #Funcion para validar la clave "1" = administrador
+    validacion_clave("1")
     while True:
         print("----------- Menu de administrador -----------")
         print("1. Registrar un nuevo alumno.")
@@ -199,16 +187,10 @@ def obtener_ficha_academica(rut):
 #Funcion para descargar el certificado del alumno
 def generar_certificado(rut):
     alumno = buscar_alumno_por_rut(rut)
-    while True:
-        clave = input("Ingrese su clave para descargar el certificado: ")
-        if clave == alumno.password:
-            print(f"----------- Certificado de alumno regular -----------")
-            print(f"El alumno {alumno.nombre} {alumno.apellido} se encuentra regularizado en el nivel {alumno.curso}")
-            break
-        else:
-            print("Clave incorrecta.")
-            input("Pulsa ENTER para continuar...")
-            continue
+    #Funcion para validar la clave "rut" = alumno
+    validacion_clave(rut)
+    print(f"----------- Certificado de alumno regular -----------")
+    print(f"El alumno {alumno.nombre} {alumno.apellido} se encuentra regularizado en el nivel {alumno.curso}")
 
 #Funcion para manejar la clave del alumno crear/modificar
 def clave_alumno(rut):
@@ -263,7 +245,35 @@ def panel_principal():
                 print("Saliendo del sistema...")
                 break
 
+#Funcion que maneja las validaciones de identidad
+def validacion_clave(rut):
+    #Validacion de identidad del administrador
+    if rut != "1":
+        alumno = buscar_alumno_por_rut(rut)
+        intentos = 3
+        while intentos > 0:
+            clave = input("Ingrese su clave: ")
+            if clave == alumno.password:
+                return 1
+            intentos -= 1
+            print(f"Clave incorrecta. Te quedan {intentos} intentos.")
+            input("Pulsa ENTER para volver a intentar...")
+        else:
+            print("Demasiados intentos fallidos. Acceso denegado.")
+            return
+    #Validacion de identidad del alumno
+    else:
+        intentos = 3
+        while intentos > 0:
+            clave = input("Ingrese la clave de administrador: ")
+            if clave == clave_maestra:
+                return 1
+            intentos -= 1
+            print(f"Clave incorrecta. Te quedan {intentos} intentos.")
+            input("Pulsa ENTER para volver a intentar...")
+        else:
+            print("Demasiados intentos fallidos. Acceso denegado.")
+            return
 
-
-
-panel_principal()
+if __name__ == "__main__":
+    panel_principal()
