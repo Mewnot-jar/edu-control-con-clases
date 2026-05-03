@@ -7,6 +7,9 @@ class Alumno:
         self.curso = curso
         self.password = None
 
+#Objeto por defecto
+alumno_defecto = Alumno("205045678", "Martin", "Ardiles", "4to Medio")
+
 #Diccionario con los registros de alumnos
 registro_global = {
     "1ro Basico": {},
@@ -20,7 +23,7 @@ registro_global = {
     "1ro Medio": {},
     "2do Medio": {},
     "3ro Medio": {},
-    "4to Medio": {},
+    "4to Medio": {"205045678": alumno_defecto},
 }
 
 #Cursos validos
@@ -51,7 +54,8 @@ def buscar_alumno_por_rut(rut):
 #Funcion que despliega el menu de administrador
 def panel_admin():
     #Funcion para validar la clave "1" = administrador
-    validacion_clave("1")
+    if not validacion_clave("1"):
+        return
     while True:
         print("----------- Menu de administrador -----------")
         print("1. Registrar un nuevo alumno.")
@@ -143,12 +147,10 @@ def panel_alumno():
         input("Pulsa ENTER para continuar...")
         return
     if not alumno_encontrado.password:
-        clave_alumno(alumno_encontrado.rut)
+        gestionar_clave_alumno(alumno_encontrado.rut)
     else:
-        while True:
-            clave_sesion = input("Ingresa tu clave: ")
-            if clave_sesion == alumno_encontrado.password:
-                break
+        if not validacion_clave(alumno_encontrado.rut):
+            return
     
     while True:
         print("----------- Menu de alumno -----------")
@@ -159,7 +161,7 @@ def panel_alumno():
         opcion = input("Ingrese la opcion que requiere realizar: ")
         match opcion:
             case "1":
-                clave_alumno(alumno_encontrado.rut)
+                gestionar_clave_alumno(alumno_encontrado.rut)
                 continue
             case "2":
                 obtener_ficha_academica(alumno_encontrado.rut)
@@ -188,12 +190,13 @@ def obtener_ficha_academica(rut):
 def generar_certificado(rut):
     alumno = buscar_alumno_por_rut(rut)
     #Funcion para validar la clave "rut" = alumno
-    validacion_clave(rut)
+    if not validacion_clave(rut):
+        return
     print(f"----------- Certificado de alumno regular -----------")
     print(f"El alumno {alumno.nombre} {alumno.apellido} se encuentra regularizado en el nivel {alumno.curso}")
 
 #Funcion para manejar la clave del alumno crear/modificar
-def clave_alumno(rut):
+def gestionar_clave_alumno(rut):
     alumno = buscar_alumno_por_rut(rut)
     if not alumno.password:
         while True:
@@ -209,10 +212,8 @@ def clave_alumno(rut):
                 input("Pulsa ENTER para continuar...")
                 continue
     else:
-        while True:
-            clave_sesion = input("Ingresa tu clave: ")
-            if clave_sesion == alumno.password:
-                break
+        if not validacion_clave(rut):
+            return
         while True:
             clave_alumno = input(f"Debes modificar tu clave sin espacios: ").strip()
             clave_alumno2 = input("Repite la clave: ").strip()
@@ -254,26 +255,26 @@ def validacion_clave(rut):
         while intentos > 0:
             clave = input("Ingrese su clave: ")
             if clave == alumno.password:
-                return 1
+                return True
             intentos -= 1
             print(f"Clave incorrecta. Te quedan {intentos} intentos.")
             input("Pulsa ENTER para volver a intentar...")
         else:
             print("Demasiados intentos fallidos. Acceso denegado.")
-            return
+            return False
     #Validacion de identidad del alumno
     else:
         intentos = 3
         while intentos > 0:
             clave = input("Ingrese la clave de administrador: ")
             if clave == clave_maestra:
-                return 1
+                return True
             intentos -= 1
             print(f"Clave incorrecta. Te quedan {intentos} intentos.")
             input("Pulsa ENTER para volver a intentar...")
         else:
             print("Demasiados intentos fallidos. Acceso denegado.")
-            return
+            return False
 
 if __name__ == "__main__":
     panel_principal()
