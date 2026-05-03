@@ -183,10 +183,12 @@ def panel_alumno():
                 panel_admin()
                 continue
             case "2":
-                panel_alumno()
+                obtener_ficha_academica(alumno_encontrado.rut)
+                input("Pulsa ENTER para continuar...")
                 continue
             case "3":
-                print("Saliendo del sistema...")
+                generar_certificado(alumno_encontrado.rut)
+                input("Pulsa ENTER para continuar...")
                 continue
             case "4":
                 print("Saliendo del sistema...")
@@ -194,6 +196,29 @@ def panel_alumno():
             case _:
                 print("Opcion no valida.")
                 input("Pulsa ENTER para volver a intentar...")
+
+#Funcion para obtener la ficha academica del alumno
+def obtener_ficha_academica(rut):
+    alumno = buscar_alumno_por_rut(rut)
+    print(f"----------- Ficha academica -----------")
+    print(f"Nombre del alumno: {alumno.nombre} {alumno.apellido}")
+    print(f"RUT del alumno: {alumno.rut}")
+    print(f"Curso del alumno: {alumno.curso}")
+
+def generar_certificado(rut):
+    alumno = buscar_alumno_por_rut(rut)
+    while True:
+        clave = input("Ingrese su clave para descargar el certificado: ")
+        if clave == alumno.password:
+            print(f"----------- Certificado de alumno regular -----------")
+            print(f"El alumno {alumno.nombre} {alumno.apellido} se encuentra regularizado en el nivel {alumno.curso}")
+            break
+        else:
+            print("Clave incorrecta.")
+            input("Pulsa ENTER para continuar...")
+            continue
+
+    
 
 #Funcion que despliega el menu de principal
 def panel_principal():
