@@ -155,16 +155,7 @@ def panel_alumno():
         input("Pulsa ENTER para continuar...")
         return
     if not alumno_encontrado.password:
-        while True:
-            clave_alumno = input("Debes crear una clave sin espacios: ").strip()
-            clave_alumno2 = input("Repite la clave: ").strip()
-            if clave_alumno == clave_alumno2 and clave_alumno != "":
-                alumno_encontrado.password = clave_alumno
-                break
-            else:
-                print("Las claves no coinciden o estan vacias.")
-                input("Pulsa ENTER para continuar...")
-                continue
+        clave_alumno(alumno_encontrado.rut)
     else:
         while True:
             clave_sesion = input("Ingresa tu clave: ")
@@ -180,7 +171,7 @@ def panel_alumno():
         opcion = input("Ingrese la opcion que requiere realizar: ")
         match opcion:
             case "1":
-                panel_admin()
+                clave_alumno(alumno_encontrado.rut)
                 continue
             case "2":
                 obtener_ficha_academica(alumno_encontrado.rut)
@@ -205,6 +196,7 @@ def obtener_ficha_academica(rut):
     print(f"RUT del alumno: {alumno.rut}")
     print(f"Curso del alumno: {alumno.curso}")
 
+#Funcion para descargar el certificado del alumno
 def generar_certificado(rut):
     alumno = buscar_alumno_por_rut(rut)
     while True:
@@ -218,7 +210,39 @@ def generar_certificado(rut):
             input("Pulsa ENTER para continuar...")
             continue
 
-    
+#Funcion para manejar la clave del alumno crear/modificar
+def clave_alumno(rut):
+    alumno = buscar_alumno_por_rut(rut)
+    if not alumno.password:
+        while True:
+            clave_alumno = input(f"Debes crear tu clave sin espacios: ").strip()
+            clave_alumno2 = input("Repite la clave: ").strip()
+            if clave_alumno == clave_alumno2 and clave_alumno != "":
+                alumno.password = clave_alumno
+                print("Operacion completada con exito.")
+                input("Pulsa ENTER para continuar...")
+                return
+            else:
+                print("Las claves no coinciden o estan vacias.")
+                input("Pulsa ENTER para continuar...")
+                continue
+    else:
+        while True:
+            clave_sesion = input("Ingresa tu clave: ")
+            if clave_sesion == alumno.password:
+                break
+        while True:
+            clave_alumno = input(f"Debes modificar tu clave sin espacios: ").strip()
+            clave_alumno2 = input("Repite la clave: ").strip()
+            if clave_alumno == clave_alumno2 and clave_alumno != "":
+                alumno.password = clave_alumno
+                print("Operacion completada con exito.")
+                input("Pulsa ENTER para continuar...")
+                return
+            else:
+                print("Las claves no coinciden o estan vacias.")
+                input("Pulsa ENTER para continuar...")
+                continue
 
 #Funcion que despliega el menu de principal
 def panel_principal():
