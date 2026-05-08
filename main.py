@@ -248,7 +248,7 @@ def panel_principal():
 
 #Funcion que maneja las validaciones de identidad
 def validacion_clave(rut):
-    #Validacion de identidad del administrador
+    #Validacion de identidad del alumno
     if rut != "1":
         alumno = buscar_alumno_por_rut(rut)
         intentos = 3
@@ -262,7 +262,7 @@ def validacion_clave(rut):
         else:
             print("Demasiados intentos fallidos. Acceso denegado.")
             return False
-    #Validacion de identidad del alumno
+    #Validacion de identidad del administrador
     else:
         intentos = 3
         while intentos > 0:
