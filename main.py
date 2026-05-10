@@ -1,30 +1,10 @@
-#Clase Alumno
-class Alumno:
-    def __init__(self, rut, nombre, apellido, curso):
-        self.rut = rut
-        self.nombre = nombre
-        self.apellido = apellido
-        self.curso = curso
-        self.password = None
+import alumno as Alumno
+import colegio as Colegio
 
 #Objeto por defecto
-alumno_defecto = Alumno("205045678", "Martin", "Ardiles", "4to Medio")
+registro_global = Colegio.Colegio()
 
 #Diccionario con los registros de alumnos
-registro_global = {
-    "1ro Basico": {},
-    "2do Basico": {},
-    "3ro Basico": {},
-    "4to Basico": {},
-    "5to Basico": {},
-    "6to Basico": {},
-    "7mo Basico": {},
-    "8vo Basico": {},
-    "1ro Medio": {},
-    "2do Medio": {},
-    "3ro Medio": {},
-    "4to Medio": {"205045678": alumno_defecto},
-}
 
 #Cursos validos
 cursos = [
@@ -45,11 +25,12 @@ cursos = [
 clave_maestra = "edu2026"
 
 #Funcion para saber si el alumno existe y devolverlo
-def buscar_alumno_por_rut(rut):
-    for alumno in registro_global.values():
-        if rut in alumno:
-            return alumno[rut]
-    return None
+# def buscar_alumno_por_rut(rut):
+#     for alumno in registro_global.obtener_registro():
+#         print(alumno)
+#         if rut in alumno:
+#             return alumno[rut]
+#     return None
 
 #Funcion que despliega el menu de administrador
 def panel_admin():
@@ -68,7 +49,7 @@ def panel_admin():
             case "2":
                 print("----------- Buscar alumno por RUT -----------")
                 rut_buscar = input("Ingresa el rut del alumno que quieres buscar: ")
-                alumno_encontrado = buscar_alumno_por_rut(rut_buscar)
+                alumno_encontrado = registro_global.buscar_alumno_registro(rut_buscar)
                 if alumno_encontrado:
                     print(f"RUT del alumno: {alumno_encontrado.rut}")
                     print(f"Nombre del alumno: {alumno_encontrado.nombre} {alumno_encontrado.apellido}")
@@ -95,7 +76,7 @@ def registrar_alumno():
         if not rut:
             print("Error: El campo RUT no puede estar vacio.")
             continue
-        if buscar_alumno_por_rut(rut):
+        if registro_global.buscar_alumno_registro(rut):
             print("Error: El rut ingresado ya existe.")
             continue
         break
@@ -128,20 +109,20 @@ def registrar_alumno():
             continue
     
     #Creacion del objeto alumno de la clase Alumno
-    alumno = Alumno(rut, nombre, apellido, curso)
-    registro_global[curso][rut] = alumno
+    alumno = Alumno.Alumno(rut, nombre, apellido, curso)
+    registro_global.agregar_registro(alumno)
 
     print("----------- Alumno Creado Exitosamente -----------")
     print(f"RUT Alumno: {alumno.rut}")
     print(f"Nombre Alumno: {alumno.nombre}")
     print(f"Apellido Alumno: {alumno.apellido}")
     print(f"Curso Alumno: {alumno.curso}")
+    print(registro_global.obtener_registro())
     input("Pulsa ENTER para continuar...")
-
 #Funcion que despliega el menu de alumno
 def panel_alumno():
     rut_ingreso = input("Ingrese su RUT: ")
-    alumno_encontrado = buscar_alumno_por_rut(rut_ingreso)
+    alumno_encontrado = registro_global.buscar_alumno_registro(rut_ingreso)
     if not alumno_encontrado:
         print("El alumno no existe.")
         input("Pulsa ENTER para continuar...")
@@ -180,7 +161,7 @@ def panel_alumno():
 
 #Funcion para obtener la ficha academica del alumno
 def obtener_ficha_academica(rut):
-    alumno = buscar_alumno_por_rut(rut)
+    alumno = registro_global.buscar_alumno_registro(rut)
     print(f"----------- Ficha academica -----------")
     print(f"Nombre del alumno: {alumno.nombre} {alumno.apellido}")
     print(f"RUT del alumno: {alumno.rut}")
@@ -188,7 +169,7 @@ def obtener_ficha_academica(rut):
 
 #Funcion para descargar el certificado del alumno
 def generar_certificado(rut):
-    alumno = buscar_alumno_por_rut(rut)
+    alumno = registro_global.buscar_alumno_registro(rut)
     #Funcion para validar la clave "rut" = alumno
     if not validacion_clave(rut):
         return
@@ -197,7 +178,7 @@ def generar_certificado(rut):
 
 #Funcion para manejar la clave del alumno crear/modificar
 def gestionar_clave_alumno(rut):
-    alumno = buscar_alumno_por_rut(rut)
+    alumno = registro_global.buscar_alumno_registro(rut)
     if not alumno.password:
         while True:
             clave_alumno = input(f"Debes crear tu clave sin espacios: ").strip()
@@ -250,7 +231,7 @@ def panel_principal():
 def validacion_clave(rut):
     #Validacion de identidad del alumno
     if rut != "1":
-        alumno = buscar_alumno_por_rut(rut)
+        alumno = registro_global.buscar_alumno_registro(rut)
         intentos = 3
         while intentos > 0:
             clave = input("Ingrese su clave: ")
