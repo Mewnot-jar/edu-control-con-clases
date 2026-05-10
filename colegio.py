@@ -17,14 +17,13 @@ class Colegio:
     def obtener_registro(self):
         return self.registro_global
     
+    def obtener_cursos(self):
+        return list(self.registro_global.keys())
+    
     def agregar_registro(self, alumno):
         self.registro_global[alumno.curso][alumno.rut] = alumno
 
     def buscar_alumno_registro(self, rut):
-        print(self.registro_global.values())
         for alumno in self.registro_global.values():
-            print(alumno)
-            print(rut)
-            # if rut in alumno:
-            #     return alumno[rut]
-            return None
+            if rut in alumno:
+                return alumno[rut]
