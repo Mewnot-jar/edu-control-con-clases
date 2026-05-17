@@ -27,3 +27,4 @@ class Colegio:
         for alumno in self.registro_global.values():
             if rut in alumno:
                 return alumno[rut]
+
