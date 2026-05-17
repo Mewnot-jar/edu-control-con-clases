@@ -156,12 +156,13 @@ class Sistema:
         #Si lo encontramos validamos si cuenta con clave
         if not alumno.password:
             #Si no cuenta con clave la creamos
-            self.gestionar_clave_alumno(alumno.rut)
+            self.gestionar_clave_alumno(alumno)
         else:
             #Si cuenta con clave la validamos
             if not self.validacion_clave(alumno.rut):
                 return
         #Logramos pasar al menu del alumno
+        self.sesion_alumno = alumno
         while True:
             print("----------- Menu de alumno -----------")
             print("1. Actualizar credenciales.")
@@ -173,27 +174,26 @@ class Sistema:
             match opcion:
                 case "1":
                     #Actualizamos sus credenciales (clave)
-                    self.gestionar_clave_alumno(alumno.rut)
+                    self.gestionar_clave_alumno(alumno)
                     continue
                 case "2":
                     #Mostramos su ficha academica
-                    self.obtener_ficha_academica(alumno.rut)
+                    self.obtener_ficha_academica(alumno)
                     continue
                 case "3":
                     #Generamos su certificado de matricula
-                    self.generar_certificado(alumno.rut)
+                    self.generar_certificado(alumno)
                     continue
                 case "4":
                     #Salimos del menu de alumno
                     print("Saliendo del sistema...")
+                    self.sesion_alumno = None
                     break
                 case _:
                     #Validamos la opcion que no se encuentra en nuestro menu
                     print("Opcion no valida.")
                     input("Pulsa ENTER para volver a intentar...")
-    def gestionar_clave_alumno(self, rut):
-        #Buscamos al alumno mediante el rut
-        alumno = self.colegio.buscar_alumno_registro(rut)
+    def gestionar_clave_alumno(self, alumno):
         #Si no encontramos su clave
         if not alumno.password:
             #La crearemos
@@ -216,7 +216,7 @@ class Sistema:
         #Por otro lado si encontramos que el alumno si cuenta con clave
         else:
             #La validaremos
-            if not self.validacion_clave(rut):
+            if not self.validacion_clave(alumno.rut):
                 return
             #Si valida su clave con exito la modificaremos
             while True:
@@ -235,9 +235,7 @@ class Sistema:
                     print("Las claves no coinciden o estan vacias.")
                     input("Pulsa ENTER para continuar...")
                     continue
-    def obtener_ficha_academica(self, rut):
-        #Buscamos al alumno mediante el rut
-        alumno = self.colegio.buscar_alumno_registro(rut)
+    def obtener_ficha_academica(self, alumno):
         if alumno:
             #Si encontramos al alumno mostramos su ficha
             print(f"----------- Ficha academica -----------")
@@ -247,12 +245,10 @@ class Sistema:
             #Si no lo encontramos le avisamos
             print("Rut no encontrado en la base de datos.")
             input("Pulsa ENTER para continuar...")
-    def generar_certificado(self, rut):
-        #Buscamos al alumno mediante el rut
-        alumno = self.colegio.buscar_alumno_registro(rut)
+    def generar_certificado(self, alumno):
         if alumno:
             #Si lo encontramos validamos su clave
-            if not self.validacion_clave(rut):
+            if not self.validacion_clave(alumno.rut):
                 #Si no valida su clave volvemos al menu de alumno
                 return
             #Si valida su clave generamos el certificado
